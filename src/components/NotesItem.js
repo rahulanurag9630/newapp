@@ -8,7 +8,7 @@ export const NotesItem = (props) => {
     const { note } = props;
 
     return (
-        <div>
+     
 
 
             <div className="col-md-3">
@@ -21,7 +21,7 @@ export const NotesItem = (props) => {
                         <i className="fa-solid fa-pen-to-square mx-2"></i>
                     </div>
                 </div>
-            </div>
+            
 
         </div>
     )
