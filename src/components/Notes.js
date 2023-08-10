@@ -74,7 +74,11 @@ const onChange = (e)=>{
           </div>
         </div>
       </div>
-      <h2>your notes</h2>
+     
+      <div className="container mx-3">
+      <h2>your notes</h2> 
+        {notes.length === 0 && 'there is not Notes to display'}
+      </div>
       {
         notes.map((note) => {
           return <NotesItem key={note._id} updateNote={updateNote} note={note} />
