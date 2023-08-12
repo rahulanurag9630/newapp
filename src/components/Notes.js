@@ -1,40 +1,50 @@
-import React, { useState,useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 
 import noteContext from '../context/notes/NoteContext';
 import { NotesItem } from './NotesItem';
 import AddNote from './AddNote';
+import { useNavigate } from 'react-router-dom';
 
-const Notes = () => {
+const Notes = (props) => {
+  const navigate = useNavigate();
   const context = useContext(noteContext);
-  const { notes, getNotes,editNote } = context;
+  const { notes, getNotes, editNote } = context;
   useEffect(() => {
-    getNotes()
+    if (localStorage.getItem('token')) {
+      getNotes()
+    }
+    else {
+      navigate('/login');
+    }
   }, []);
 
   const ref = useRef(null);
   const refClose = useRef(null);
-  const [note, setNote] = useState({id: "",etitle: "", edescription: "", etag: ""})
+  const [note, setNote] = useState({ id: "", etitle: "", edescription: "", etag: "" })
 
 
   const updateNote = (currentNote) => {
     ref.current.click();
-    setNote({id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag:currentNote.tag})
+    setNote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag })
+    props.showAlert("updated successfully", "success");
   }
 
-  const handleClick = (e)=>{
+  const handleClick = (e) => {
     e.preventDefault();
-     editNote(note.id, note.etitle, note.edescription, note.etag)
+    editNote(note.id, note.etitle, note.edescription, note.etag)
     refClose.current.click();
-}
+    props.showAlert("updated successfully", "success");
 
-const onChange = (e)=>{
-    setNote({...note, [e.target.name]: e.target.value})
-}
+  }
+
+  const onChange = (e) => {
+    setNote({ ...note, [e.target.name]: e.target.value })
+  }
 
 
   return (
     <div className="row my-3">
-      <AddNote />
+      <AddNote showAlert={props.showAlert} />
 
 
 
@@ -54,11 +64,11 @@ const onChange = (e)=>{
               <form className="my-3">
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">Title</label>
-                  <input type="text" className="form-control" value={note.etitle} id="etitle" name="etitle" aria-describedby="emailHelp"  onChange={onChange} minLength={5} required />
+                  <input type="text" className="form-control" value={note.etitle} id="etitle" name="etitle" aria-describedby="emailHelp" onChange={onChange} minLength={5} required />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">Description</label>
-                  <input type="text" className="form-control" value={note.edescription} id="edescription" name="edescription"  onChange={onChange} minLength={5} required />
+                  <input type="text" className="form-control" value={note.edescription} id="edescription" name="edescription" onChange={onChange} minLength={5} required />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="tag" className="form-label">Tag</label>
@@ -74,14 +84,14 @@ const onChange = (e)=>{
           </div>
         </div>
       </div>
-     
+
       <div className="container mx-3">
-      <h2>your notes</h2> 
+        <h2>your notes</h2>
         {notes.length === 0 && 'there is not Notes to display'}
       </div>
       {
         notes.map((note) => {
-          return <NotesItem key={note._id} updateNote={updateNote} note={note} />
+          return <NotesItem key={note._id} updateNote={updateNote} showAlert={props.showAlert} note={note} />
 
         })
       }
